@@ -1,0 +1,51 @@
+/* CSS Animations for AdditionalInfo Component */
+
+@keyframes fadeSlideLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeSlideRight {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes wave {
+  from {
+    transform: translateX(-120%);
+  }
+  to {
+    transform: translateX(120%);
+  }
+}
+
+/* Location card animation */
+.location-card {
+  animation: fadeSlideLeft 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
+}
+
+/* Subscription card animation */
+.subscription-card {
+  animation: fadeSlideRight 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s both;
+}
+
+/* Wave animation */
+.wave-animation {
+  animation: wave 1.2s ease-in-out 0.4s forwards;
+}
+
+.wave-delay {
+  animation-delay: 0.5s;
+}

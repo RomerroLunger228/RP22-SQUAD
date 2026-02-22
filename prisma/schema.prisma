@@ -1,0 +1,152 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model appointments {
+  id                         Int       @id(map: "appoinents_pkey") @default(autoincrement())
+  user_id                    Int
+  created_at                 DateTime  @default(now()) @db.Timestamptz(6)
+  appointment_date           DateTime  @db.Date
+  service_id                 Int
+  time                       DateTime? @db.Time(6)
+  payment_method             String?   @default("cash")
+  status                     String
+  stripe_checkout_session_id String?
+  stripe_payment_intent_id   String?
+  payment_status             String?
+  paid_at                    DateTime? @db.Timestamptz(6)
+  subscription_benefit_type  String?
+  original_service_price     Int?
+  discount_amount            Int?
+  final_price_charged        Int?
+  daily_reminder_sent        Boolean?  @default(false)
+  coupon_id                  Int?
+  services                   services  @relation(fields: [service_id], references: [id], onDelete: SetNull, onUpdate: NoAction)
+  coupons                    coupons?  @relation(fields: [coupon_id], references: [id], onUpdate: NoAction, map: "fk_appointments_coupon")
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model blocked_times {
+  id         Int       @id @default(autoincrement())
+  start_time DateTime? @db.Time(6)
+  end_time   DateTime  @db.Time(6)
+  reason     String?
+  date       DateTime? @db.Date
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model haircut_categories {
+  id       Int        @id @default(autoincrement())
+  name     String
+  services services[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model master_settings {
+  id         Int       @id @default(autoincrement())
+  weekday    Int
+  start_time DateTime  @db.Time(6)
+  end_time   DateTime? @db.Time(6)
+  is_working Boolean   @default(true)
+  date       DateTime? @db.Date
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model services {
+  id                 Int                  @id @default(autoincrement())
+  name               String               @default("") @db.VarChar
+  pl_price           Int
+  usdt_price         Int
+  ton_price          Int
+  duration_minutes   Int
+  category_id        Int
+  points             Int                  @default(10)
+  stripe_price_id    String?
+  appointments       appointments[]
+  haircut_categories haircut_categories   @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  subscription_plans subscription_plans[]
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model users {
+  id                        Int           @id @unique @default(autoincrement())
+  username                  String        @db.VarChar
+  points                    Int?
+  role                      String        @default("user")
+  avatar_url                String?
+  telegram_id               String?       @unique
+  referred_by               String?
+  referral_completed_unique Int           @default(0)
+  referral_rewards_used     Int           @default(0)
+  comments                  comments[]
+  coupons                   coupons[]
+  subscription              subscription?
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model comments {
+  id         BigInt   @id @default(autoincrement())
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  content    String?
+  user_id    Int?
+  users      users?   @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model subscription_plans {
+  id                  Int                @id @default(autoincrement())
+  tier_id             Int
+  duration_months     Int?               @default(1)
+  price               Int?
+  currency            String?
+  stripe_price_id     String?
+  code                String?
+  service_type        String?
+  discount_percentage Int?
+  free_visits_count   Int?
+  service_id          Int?
+  subscription        subscription[]
+  services            services?          @relation(fields: [service_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  subscription_tiers  subscription_tiers @relation(fields: [tier_id], references: [id], onDelete: SetNull, onUpdate: NoAction)
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model subscription_tiers {
+  id                 Int                  @id @default(autoincrement())
+  title              String?
+  description        String?
+  priority           Int?                 @default(1)
+  subscription_plans subscription_plans[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model subscription {
+  id                     BigInt              @id @default(autoincrement())
+  user_id                Int                 @unique
+  plan_id                Int?
+  stripe_customer_id     String?
+  stripe_subscription_id String?
+  status                 String?
+  started_at             DateTime?           @db.Timestamp(6)
+  expires_at             DateTime?           @db.Timestamp(6)
+  created_at             DateTime?           @default(now()) @db.Timestamp(6)
+  free_visits_used       Int?                @default(0)
+  subscription_plans     subscription_plans? @relation(fields: [plan_id], references: [id], onUpdate: NoAction)
+  users                  users               @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model coupons {
+  id           Int            @id @default(autoincrement())
+  user_id      Int
+  is_used      Boolean        @default(false)
+  created_at   DateTime?      @default(now()) @db.Timestamptz(6)
+  appointments appointments[]
+  users        users          @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "coupon_user_id")
+}

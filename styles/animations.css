@@ -1,0 +1,153 @@
+/* Анимации для замены framer-motion */
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* CSS классы для анимаций */
+.animate-slideUp {
+  animation: slideUp 0.5s ease-out forwards;
+  opacity: 0;
+}
+
+.animate-slideLeft {
+  animation: slideLeft 0.3s ease-out forwards;
+  opacity: 0;
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.4s ease-out forwards;
+  opacity: 0;
+}
+
+.animate-scaleIn {
+  animation: scaleIn 0.4s ease-out forwards;
+  opacity: 0;
+}
+
+@keyframes floatLeft {
+  0%, 100% {
+    transform: translate(-40px, 40px);
+  }
+  50% {
+    transform: translate(20px, -20px);
+  }
+}
+
+@keyframes floatRight {
+  0%, 100% {
+    transform: translate(40px, -40px);
+  }
+  50% {
+    transform: translate(-20px, 20px);
+  }
+}
+
+@keyframes lightWave {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(120%);
+  }
+}
+
+@keyframes pointsAppear {
+  0% {
+    opacity: 0;
+    transform: scale(0.7) translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes fadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* CSS классы для анимаций */
+.animate-float-left {
+  animation: floatLeft 6s ease-in-out infinite alternate;
+}
+
+.animate-float-right {
+  animation: floatRight 7s ease-in-out infinite alternate;
+}
+
+.animate-light-wave {
+  animation: lightWave 1.4s ease-in-out 0.3s;
+}
+
+.animate-points-appear {
+  animation: pointsAppear 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  opacity: 0;
+}
+
+.animate-fadeUp {
+  animation: fadeUp 0.4s ease-out forwards;
+  opacity: 0;
+}
+
+/* Стейггерные анимации с delay */
+.animate-slideUp[style*="animation-delay"] {
+  animation-fill-mode: both;
+}
+
+.animate-slideLeft[style*="animation-delay"] {
+  animation-fill-mode: both;
+}
+
+.animate-points-appear[style*="animation-delay"] {
+  animation-fill-mode: both;
+}
+
+.animate-fadeUp[style*="animation-delay"] {
+  animation-fill-mode: both;
+}

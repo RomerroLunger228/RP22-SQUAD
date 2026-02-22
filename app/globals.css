@@ -1,0 +1,508 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --font-outfit: "Outfit", sans-serif;
+  --font-montserrat: "Montserrat", sans-serif;
+  --font-cormorant-garamond: "Cormorant Garamond", serif;
+  --block-color: #000000;
+  --text: #ffffff;
+  --secondary-text: #BBBDC0;
+  --radius: 0.625rem;
+  --background: oklch(0 0 0);
+  --foreground: oklch(0.145 0 0);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
+  --accent: oklch(0 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-montserrat: var(--font-montserrat);
+  --font-outfit: var(--font-outfit);
+  --font-cormorant-garamond: var(--font-cormorant-garamond);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --block-color: #000000;
+    --text: #ffffff;
+    --secondary-text: #BBBDC0;
+  }
+}
+
+/* Фиксы для Telegram Web App */
+.telegram-footer {
+  /* Фиксируем навбар в нижней части экрана в Telegram */
+  position: fixed !important;
+  bottom: 0 !important;
+  /* Учитываем safe area для устройств с вырезами */
+  padding-bottom: max(env(safe-area-inset-bottom), 16px);
+}
+
+/* Дополнительные стили для Telegram */
+@supports (-webkit-touch-callout: none) {
+  /* Только для iOS/Safari */
+  .telegram-footer {
+    /* Предотвращаем "прыжки" навбара */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+}
+
+body {
+  color: var(--text);
+  font-family: var(--font-outfit);
+}
+
+/* Предотвращение layout shift для fixed элементов */
+footer[class*="fixed"] {
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  -webkit-transform: translate3d(0, 0, 0);
+  -webkit-backface-visibility: hidden;
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-outfit) !important;
+  }
+  /* ============ КАЛЕНДАРЬ shadcn/ui - ФИКСЫ ============ */
+
+/* Центрирование всего календаря */
+.rdp {
+  --rdp-cell-size: 44px; /* Размер ячейки */
+  margin: 0 auto !important;
+  width: 100% !important;
+}
+
+.rdp-root {
+  width: 100% !important;
+}
+
+/* Контейнер месяцев */
+.rdp-months {
+  display: flex !important;
+  justify-content: center !important;
+  width: 100% !important;
+}
+
+/* Месяц - фиксированная ширина */
+.rdp-month {
+  width: 100% !important;
+  max-width: 400px !important;
+}
+
+/* Таблица дней */
+.rdp-table {
+  width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* Строка с днями недели (Пн, Вт, Ср...) */
+.rdp-head_row {
+  display: flex !important;
+  justify-content: center !important;
+  width: 100% !important;
+  gap: 4px !important;
+}
+
+/* Ячейка дня недели */
+.rdp-head_cell {
+  flex: 1 !important;
+  text-align: center !important;
+  min-width: var(--rdp-cell-size) !important;
+  max-width: var(--rdp-cell-size) !important;
+  height: 32px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Строка с числами (неделя) */
+.rdp-week {
+  display: flex !important;
+  justify-content: center !important;
+  width: 100% !important;
+  gap: 4px !important;
+  margin: 4px 0 !important;
+}
+
+/* Ячейка дня */
+.rdp-day {
+  flex: 1 !important;
+  min-width: var(--rdp-cell-size) !important;
+  max-width: var(--rdp-cell-size) !important;
+  height: var(--rdp-cell-size) !important;
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Кнопка дня - ОСНОВНОЕ! */
+.rdp-day_button {
+  width: 100% !important;
+  height: 100% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 !important;
+  border-radius: 8px !important;
+  text-align: center !important;
+  line-height: 1 !important;
+}
+
+/* Выбранный день */
+.rdp-day_selected .rdp-day_button {
+  background-color: #7CB895 !important;
+  color: white !important;
+}
+
+/* Сегодня */
+.rdp-day_today .rdp-day_button {
+  border: 2px solid #7CB895 !important;
+}
+
+/* Ховер на день */
+.rdp-day_button:hover:not([disabled]) {
+  background-color: #333333 !important;
+}
+
+/* Отключенные дни */
+.rdp-day_disabled .rdp-day_button {
+  color: #666666 !important;
+  opacity: 0.4 !important;
+  cursor: not-allowed !important;
+}
+
+/* Дни вне месяца */
+.rdp-day_outside .rdp-day_button {
+  color: #666666 !important;
+}
+
+/* ============ ЦВЕТА ТЕКСТА ============ */
+
+/* Заголовок месяца */
+.rdp-caption_label {
+  color: white !important;
+  font-size: 18px !important;
+  font-weight: 500 !important;
+}
+
+/* Дни недели (Пн, Вт...) */
+.rdp-weekday {
+  color: #BBBDC0 !important;
+  font-size: 13px !important;
+  font-weight: 400 !important;
+}
+
+/* Числа дней */
+.rdp-day_button {
+  color: white !important;
+  font-size: 15px !important;
+  font-weight: 400 !important;
+}
+
+/* РАДИКАЛЬНОЕ ФОРСИРОВАНИЕ ЦЕНТРИРОВАНИЯ */
+.rdp-day_button {
+  font-family: inherit !important;
+  box-sizing: border-box !important;
+}
+
+.rdp-day_button span,
+.rdp-day_button > *,
+.rdp-day_button::before,
+.rdp-day_button::after {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  line-height: var(--rdp-cell-size) !important;
+  text-align: center !important;
+  vertical-align: middle !important;
+}
+
+/* Полностью переопределяем стили чисел */
+.rdp-day_button {
+  font-variant-numeric: tabular-nums !important;
+  letter-spacing: 0 !important;
+}
+
+/* Убираем любые отступы у всех элементов */
+.rdp-day_button,
+.rdp-day_button * {
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  outline: 0 !important;
+}
+
+/* ============ КНОПКИ НАВИГАЦИИ ============ */
+
+/* Кнопки вперед/назад */
+.rdp-button_previous,
+.rdp-button_next {
+  background-color: #222222 !important;
+  border-radius: 8px !important;
+  width: 40px !important;
+  height: 40px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: white !important;
+}
+
+.rdp-button_previous:hover,
+.rdp-button_next:hover {
+  background-color: #333333 !important;
+}
+
+/* Иконки стрелок */
+.rdp-button_previous svg,
+.rdp-button_next svg {
+  width: 18px !important;
+  height: 18px !important;
+}
+
+/* ============ МОБИЛЬНЫЕ СТИЛИ ============ */
+@media (max-width: 640px) {
+  .rdp {
+    --rdp-cell-size: 40px;
+  }
+  .rdp-table {
+    width: 100% !important;
+  }
+  
+  .rdp-month {
+    max-width: 100% !important;
+    padding: 0 8px !important;
+  }
+  
+  /* Принудительное центрирование для мобильных */
+  .rdp-week {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    width: 100% !important;
+  }
+  
+  .rdp-day {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    flex: 1 !important;
+  }
+  
+  .rdp-day_button {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    text-align: center !important;
+    margin: 0 auto !important;
+    position: relative !important;
+  }
+  
+  /* Форсируем центрирование содержимого в мобильной версии */
+  .rdp-day_button::before {
+    content: '';
+    display: block;
+    width: 0;
+    height: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
+/* ============ ИСПРАВЛЕНИЕ ДЛЯ SHADCN/UI КАЛЕНДАРЯ ============ */
+
+/* Центрирование только для дневных кнопок, НЕ навигационных */
+[data-slot="calendar"] [role="gridcell"] button,
+button[data-day] {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+}
+
+/* ============ КОНЕЦ СТИЛЕЙ КАЛЕНДАРЯ ============ */
+
+/* ============ КАСТОМНЫЕ СТИЛИ ДЛЯ НОВОГО КАЛЕНДАРЯ ============ */
+
+/* Скрытие scrollbar для горизонтального скролла недели */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;            /* Chrome, Safari and Opera */
+}
+
+/* ============ КОНЕЦ СТИЛЕЙ ============ */
+
+/* Кастомные скроллбары для рефералов */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: #333333 transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: #333333;
+  border-radius: 3px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background-color: #555555;
+}
+
+/* ============ ПРЕДОТВРАЩЕНИЕ ПЕРЕТАСКИВАНИЯ ============ */
+
+/* Запрещаем перетаскивание всех изображений, SVG и ссылок */
+img, a, svg {
+  -webkit-user-drag: none;
+  user-drag: none;
+}
+
+/* ============ ОТКЛЮЧЕНИЕ ЗУМА В TELEGRAM WEBAPP ============ */
+
+* {
+  touch-action: manipulation;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Предотвращаем зум жестами */
+html {
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* Запрещаем двойное нажатие для зума */
+button, input, select, textarea, a {
+  touch-action: manipulation;
+}
+
+}

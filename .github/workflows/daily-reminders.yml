@@ -1,0 +1,52 @@
+name: Daily Reminders
+
+# Запускается каждый день в 6:00 UTC (9:00 MSK)
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  # Возможность запустить вручную для тестирования
+  workflow_dispatch:
+
+jobs:
+  send-daily-reminders:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Send Daily Reminders
+        run: |
+          echo "🌅 Отправка ежедневных напоминаний..."
+          echo "🔗 URL: ${{ secrets.APP_URL }}/api/cron/daily-reminders"
+          
+          # Вызываем API endpoint для отправки напоминаний (с автоматическими редиректами)
+          response=$(curl -s -L -w "%{http_code}" \
+            -X GET \
+            -H "Authorization: Bearer ${{ secrets.CRON_SECRET_KEY }}" \
+            -H "Content-Type: application/json" \
+            -H "User-Agent: GitHub-Actions-Daily-Reminders/1.0" \
+            "${{ secrets.APP_URL }}/api/cron/daily-reminders")
+          
+          # Извлекаем HTTP код
+          http_code=${response: -3}
+          response_body=${response%???}
+          
+          echo "📊 HTTP Response Code: $http_code"
+          echo "📋 Response Body: $response_body"
+          
+          # Проверяем успешность выполнения
+          if [ "$http_code" -eq 200 ]; then
+            echo "✅ Ежедневные напоминания отправлены успешно!"
+          else
+            echo "❌ Ошибка при отправке напоминаний (HTTP $http_code)"
+            echo "Response: $response_body"
+            
+            # Дополнительная диагностика для редиректов
+            if [ "$http_code" -eq 301 ] || [ "$http_code" -eq 302 ] || [ "$http_code" -eq 308 ]; then
+              echo "🔄 Получен редирект. Проверьте правильность URL в APP_URL"
+              echo "💡 Убедитесь что URL начинается с https:// и не содержит лишних символов"
+            fi
+            exit 1
+          fi
+
+      - name: Log Completion
+        run: |
+          echo "🎉 GitHub Actions workflow завершен: $(date)"
