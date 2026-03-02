@@ -3,6 +3,7 @@
 import { useCallback } from 'react';
 import { CommentForm } from './CommentForm';
 import { CommentsList } from './CommentsList';
+import { CommentsErrorBoundary } from './CommentsErrorBoundary';
 import { useCommentForm } from '@/hooks/comments/useCommentForm';
 import { useCommentsData } from '@/hooks/comments/useCommentsData';
 
@@ -24,6 +25,7 @@ interface CommentsContainerProps {
  * ✅ Container Pattern: Компонент только оркестрирует логику
  * ✅ Composition: Собирает малые компоненты в один flow
  * ✅ Clean separation: Каждый компонент имеет свою ответственность
+ * ✅ Error Boundary: Изолирует ошибки комментариев
  * ✅ Backward compatibility: Тот же API что у старого CommentsSection
  */
 export function CommentsContainer({ 
@@ -52,27 +54,29 @@ export function CommentsContainer({
     console.log('deleted comment with id', { commentId });
   }, []);
 
-  // 📚 ОБУЧЕНИЕ: Контейнер просто соединяет компоненты
+  // 📚 ОБУЧЕНИЕ: Контейнер оборачиваем в Error Boundary для защиты
   return (
-    <div className="bg-black">
-      {/* 📚 ОБУЧЕНИЕ: Форма изолирована, получает только нужные пропсы */}
-      <CommentForm
-        currentUser={currentUser}
-        onSubmit={submitComment}
-        isSubmitting={isSubmitting}
-        canComment={canComment}
-        availableComments={availableComments}
-      />
-      
-      {/* 📚 ОБУЧЕНИЕ: Список изолирован, получает только нужные данные */}
-      <CommentsList
-        comments={comments}
-        currentUser={currentUser}
-        isLoading={isLoading}
-        hasMore={hasMore}
-        onLoadMore={onLoadMore}
-        onDelete={handleDelete}
-      />
-    </div>
+    <CommentsErrorBoundary>
+      <div className="bg-black">
+        {/* 📚 ОБУЧЕНИЕ: Форма изолирована, получает только нужные пропсы */}
+        <CommentForm
+          currentUser={currentUser}
+          onSubmit={submitComment}
+          isSubmitting={isSubmitting}
+          canComment={canComment}
+          availableComments={availableComments}
+        />
+        
+        {/* 📚 ОБУЧЕНИЕ: Список изолирован, получает только нужные данные */}
+        <CommentsList
+          comments={comments}
+          currentUser={currentUser}
+          isLoading={isLoading}
+          hasMore={hasMore}
+          onLoadMore={onLoadMore}
+          onDelete={handleDelete}
+        />
+      </div>
+    </CommentsErrorBoundary>
   );
 }
