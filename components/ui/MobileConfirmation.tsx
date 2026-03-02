@@ -263,7 +263,7 @@ export function MobileConfirmation({
                 <p className="text-gray-400 text-sm">Бесплатные визиты и постоянная скидка</p>
               </div>
               <button 
-                onClick={() => window.location.href = '/subscription-plans'}
+                onClick={() => window.location.href = '/subscription'}
                 className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
               >
                 Купить
