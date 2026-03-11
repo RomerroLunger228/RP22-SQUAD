@@ -232,9 +232,14 @@ function filterEmptyDaySlots(
         filteredSlots.push(endSlot.time);
     }
     
-    // 3. ЦЕЛЫЕ ЧАСЫ МЕЖДУ НАЧАЛОМ И КОНЦОМ
+    // 3. ЦЕЛЫЕ ЧАСЫ МЕЖДУ НАЧАЛОМ И КОНЦОМ (исключая менее оптимальные чем идеальный конец)
     const startHour = Math.ceil(workStartMinutes / 60) * 60; // следующий целый час после начала
-    const endHour = Math.floor(idealEndMinutes / 60) * 60;   // последний целый час до конца
+    let endHour = Math.floor(idealEndMinutes / 60) * 60;     // последний целый час до конца
+    
+    // Если есть идеальный конец, исключаем целые часы после него
+    if (endSlot && endHour >= idealEndMinutes - 60) {
+        endHour = idealEndMinutes - 60; // исключаем последний час если есть более оптимальный слот
+    }
     
     const wholeHourSlots: string[] = [];
     for (let hour = startHour; hour <= endHour; hour += 60) {
