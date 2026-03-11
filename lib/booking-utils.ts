@@ -66,12 +66,12 @@ export function calculateOptimalSlots(
     const workStartMinutes = timeToMinutes(workStart);
     const workEndMinutes = timeToMinutes(workEnd);
     
-    // Подготавливаем отсортированные записи с буферами
+    // Подготавливаем отсортированные записи (без буфера - записи могут идти вплотную)
     const sortedAppointments = [...appointments]
         .filter(app => app.time)
         .map(app => ({
-            start: timeToMinutes(app.time) - buffer,
-            end: timeToMinutes(app.time) + app.duration + buffer
+            start: timeToMinutes(app.time),
+            end: timeToMinutes(app.time) + app.duration
         }))
         .sort((a, b) => a.start - b.start);
 
@@ -146,7 +146,7 @@ function calculateSlotPriority(
 
     // Приоритет 2: Сразу после записи (плотная упаковка)
     for (const app of appointments) {
-        if (Math.abs(slotStart - app.end) <= 10) { // в пределах 10 минут после записи
+        if (slotStart === app.end) { // точно после окончания записи
             return 2;
         }
     }
@@ -244,8 +244,8 @@ function filterEmptyDaySlots(
         }
     }
     
-    // Берем максимум 3-4 целых часа
-    const selectedWholeHours = wholeHourSlots.slice(0, 4);
+    // Берем ВСЕ доступные целые часы для пустого дня
+    const selectedWholeHours = wholeHourSlots; // убрано ограничение slice(0, 4)
     filteredSlots.push(...selectedWholeHours);
     
     

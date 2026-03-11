@@ -74,8 +74,10 @@ export async function GET(request: NextRequest): Promise<Response> {
         const { searchParams } = new URL(request.url);
         const serviceId = searchParams.get("serviceId");
         const dateStr = searchParams.get("date");
-        const slotInterval = parseInt(searchParams.get("slotInterval") || "5");
-        const bufferMinutes = parseInt(searchParams.get("buffer") || "5");
+        
+        // Фиксированные значения для алгоритма
+        const slotInterval = 5; // 5 минут шаг поиска слотов
+        const bufferMinutes = 0; // Без буфера - записи могут идти вплотную
 
 
         // Валидация
@@ -235,14 +237,14 @@ export async function GET(request: NextRequest): Promise<Response> {
                 duration: app.services.duration_minutes
             }));
 
-        // Рассчитываем доступные слоты БЕЗ blocked_times
+        // Рассчитываем доступные слоты БЕЗ blocked_times и БЕЗ буфера
         const availableSlots = calculateOptimalSlots(
             workStart,
             workEnd,
             formattedAppointments,
             serviceDuration,
-            bufferMinutes,
-            slotInterval,
+            bufferMinutes, // = 0, записи могут идти вплотную
+            slotInterval,  // = 5, шаг поиска слотов
             [] // Больше не используем blocked_times
         );
 
@@ -275,8 +277,8 @@ export async function GET(request: NextRequest): Promise<Response> {
                 date: dateStr,
                 calculation: {
                     algorithm: "optimal_packing",
-                    buffer_minutes: bufferMinutes,
-                    step_minutes: slotInterval,
+                    buffer_minutes: bufferMinutes, // 0 - записи могут идти вплотную
+                    step_minutes: slotInterval, // 5 - шаг поиска для точности
                     total_slots_found: availableSlots.length,
                     blocked_times_count: 0
                 },
