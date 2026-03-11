@@ -199,16 +199,16 @@ export function AdminBookingModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-      <div className="bg-[#1A1A1A] rounded-xl border border-[#2A2A2A] w-full max-w-md h-[85vh] flex flex-col">
+    <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 pb-20">
+      <div className="bg-[#121212] rounded-xl border border-[#1F1F1F] w-full max-w-md h-[85vh] flex flex-col shadow-2xl">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-[#2A2A2A]">
+        <div className="flex items-center justify-between p-4 border-b border-[#1F1F1F]">
           <h2 className="text-white font-montserrat font-semibold text-lg">
             Создать запись
           </h2>
           <button
             onClick={handleClose}
-            className="w-8 h-8 flex items-center justify-center rounded-lg bg-[#2A2A2A] hover:bg-[#333333] text-white transition-colors"
+            className="w-8 h-8 flex items-center justify-center rounded-lg bg-[#1F1F1F] hover:bg-[#2A2A2A] text-white transition-colors"
           >
             <X className="w-4 h-4" />
           </button>
@@ -255,8 +255,8 @@ export function AdminBookingModal({
                     onClick={() => setSelectedService(service)}
                     className={`w-full p-3 rounded-lg border transition-colors text-left ${
                       selectedService?.id === service.id
-                        ? 'bg-white/20 border-white/40 text-white'
-                        : 'bg-[#2A2A2A] border-[#333333] text-[#BBBDC0] hover:border-white/40'
+                        ? 'bg-white/10 border-white/30 text-white'
+                        : 'bg-[#1F1F1F] border-[#2A2A2A] text-[#999999] hover:border-white/30'
                     }`}
                   >
                     <div className="flex justify-between items-start">
@@ -299,7 +299,7 @@ export function AdminBookingModal({
                       className={`p-2 rounded-lg border transition-colors text-sm ${
                         selectedTime === slot.time
                           ? 'bg-white text-black'
-                          : 'bg-[#2A2A2A] border-[#333333] text-[#BBBDC0] hover:border-white/40'
+                          : 'bg-[#1F1F1F] border-[#2A2A2A] text-[#999999] hover:border-white/30'
                       }`}
                     >
                       {slot.time.substring(0, 5)}
@@ -318,17 +318,17 @@ export function AdminBookingModal({
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t border-[#2A2A2A] flex gap-3 flex-shrink-0">
+        <div className="p-4 border-t border-[#1F1F1F] flex gap-3 flex-shrink-0">
           <button
             onClick={handleClose}
-            className="flex-1 px-4 py-2 bg-[#2A2A2A] hover:bg-[#333333] text-white font-medium rounded-lg transition-colors"
+            className="flex-1 px-4 py-2 bg-[#1F1F1F] hover:bg-[#2A2A2A] text-white font-medium rounded-lg transition-colors"
           >
             Отмена
           </button>
           <button
             onClick={handleSubmit}
             disabled={!selectedService || !selectedTime || createAppointmentMutation.isPending}
-            className="flex-1 px-4 py-2 bg-white hover:bg-white/90 disabled:bg-[#333333] disabled:text-[#666666] text-black font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
+            className="flex-1 px-4 py-2 bg-white hover:bg-white/90 disabled:bg-[#2A2A2A] disabled:text-[#555555] text-black font-medium rounded-lg transition-colors flex items-center justify-center gap-2"
           >
             {createAppointmentMutation.isPending ? (
               <>

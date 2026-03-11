@@ -10,6 +10,7 @@
 
 import { Calendar } from 'lucide-react';
 import { User } from '@/types/admin';
+import UserAvatar from '@/components/ui/UserAvatar';
 
 interface UserProfileProps {
   user: User;
@@ -26,11 +27,13 @@ export function UserProfile({ user }: UserProfileProps) {
     <div className="space-y-4">
       {/* АВАТАР И ИМЯ - точно такая же разметка как в оригинале (строки 204-216) */}
       <div className="flex flex-row items-center justify-start gap-2 bg-black/60 rounded-lg p-3">
-        <div
-          className="w-20 h-20 rounded-full flex items-center justify-center text-white font-montserrat font-bold text-2xl bg-gray-600"
-        >
-          {user.username.charAt(0).toUpperCase()}
-        </div>
+        <UserAvatar
+          username={user.username}
+          avatar_url={user.avatar_url}
+          photo_url={user.photo_url}
+          size="large"
+          className="w-20 h-20 text-2xl bg-gray-600"
+        />
         <div>
           <h3 className="text-xl font-bold text-white font-montserrat">
             @{user.username}

@@ -58,7 +58,7 @@ export default function AdminRandomizer({ users }: AdminRandomizerProps) {
 
       <div className="flex justify-center flex-col items-center">
         {/* СТАТИЧНЫЙ КОНТЕЙНЕР */}
-        <div className="relative overflow-hidden flex items-center justify-center w-full h-50 bg-gradient-to-br from-yellow-500/20 to-yellow-600/20 border-yellow-500/30 rounded-lg border p-4">
+        <div className="relative overflow-hidden flex items-center justify-center w-full h-32 bg-gradient-to-br from-yellow-500/20 to-yellow-600/20 border-yellow-500/30 rounded-lg border p-4">
           
           {/* ВОЛНА 1 */}
           <AnimatePresence>
@@ -93,7 +93,7 @@ export default function AdminRandomizer({ users }: AdminRandomizerProps) {
           </AnimatePresence>
 
           {/* КОНТЕНТ */}
-          <div className="relative z-10">
+          <div className="relative z-10 flex items-center justify-center w-full h-full">
             <AnimatePresence mode="wait">
               {user ? (
                 <motion.div
@@ -104,7 +104,7 @@ export default function AdminRandomizer({ users }: AdminRandomizerProps) {
                   transition={{ duration: 0.25 }}
                   className="text-center"
                 >
-                  <h3 className="text-xl font-semibold">
+                  <h3 className="text-xl font-semibold text-white">
                     @{user.username}
                   </h3>
                 </motion.div>
@@ -112,7 +112,7 @@ export default function AdminRandomizer({ users }: AdminRandomizerProps) {
                 <motion.p
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className="text-white/80"
+                  className="text-white/80 text-center"
                 >
                   Нажмите кнопку, чтобы выбрать пользователя
                 </motion.p>
