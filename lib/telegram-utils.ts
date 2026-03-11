@@ -231,17 +231,21 @@ export async function handleStartCommand(chatId: number, from: { first_name?: st
   }
 
   const welcomeMessage = `
-🎉 <b>Добро пожаловать${isNewUser ? '' : ' обратно'}!</b>
+🎉 <b>Добро пожаловать в RP22!</b>
 
 Привет, ${from?.first_name || 'друг'}! 👋
 ${referralMessage}
 Я бот для записи на услуги. Вот что я умею:
 • 📅 Записать на прием
 • 📋 Показать ваши записи  
-• 💰 Информация о тарифах
-• ❓ Помощь
 
-Чтобы начать, используйте команды или напишите мне!
+
+⚠️ <b>Это MVP версия приложения</b>
+В случае проблем - просто перезапустите мини-приложение
+
+🔧 При поломках или сбоях обращайтесь: @federal0dev
+
+Чтобы начать, запустите мини-приложение!
   `;
   
   return await sendMessage(chatId, welcomeMessage.trim());
@@ -306,12 +310,15 @@ export async function sendAppointmentNotification(
 /**
  * Уведомление админу о новой записи
  */
+interface AdminUser {
+  telegram_id: string | null;
+  username: string | null;
+}
+
 export async function notifyAdminAboutNewAppointment(context: NotificationContext): Promise<boolean> {
-  console.log(`🔔 [ADMIN_NOTIFY] Начало отправки уведомления админам о новой записи #${context.appointmentId}`);
-  
   try {
     // Получаем всех админов с telegram_id
-    const admins = await prisma.users.findMany({
+    const admins: AdminUser[] = await prisma.users.findMany({
       where: {
         role: 'admin',
         telegram_id: { not: null }
@@ -319,19 +326,13 @@ export async function notifyAdminAboutNewAppointment(context: NotificationContex
       select: { telegram_id: true, username: true }
     });
 
-    console.log(`👥 [ADMIN_NOTIFY] Найдено админов: ${admins.length}`);
-    console.log(`📋 [ADMIN_NOTIFY] Список админов:`, admins.map(a => ({ username: a.username, telegram_id: a.telegram_id })));
-
     if (admins.length === 0) {
-      console.log('⚠️ [ADMIN_NOTIFY] Нет админов с telegram_id для отправки уведомлений');
       return false;
     }
 
     // Отправляем уведомления всем админам
-    console.log(`📤 [ADMIN_NOTIFY] Начинаем отправку уведомлений ${admins.length} админам`);
     const results = await Promise.allSettled(
-      admins.map(admin => {
-        console.log(`👤 [ADMIN_NOTIFY] Отправка админу ${admin.username} (${admin.telegram_id})`);
+      admins.map((admin) => {
         return sendAppointmentNotification(
           'appointment_created',
           'admin',
@@ -341,19 +342,7 @@ export async function notifyAdminAboutNewAppointment(context: NotificationContex
       })
     );
 
-    const successResults = results.filter(result => result.status === 'fulfilled' && result.value === true);
-    const failedResults = results.filter(result => result.status === 'rejected' || (result.status === 'fulfilled' && result.value === false));
-    
-    console.log(`📊 [ADMIN_NOTIFY] Результат: уведомления отправлены ${successResults.length}/${admins.length} админам`);
-    
-    if (failedResults.length > 0) {
-      console.warn(`⚠️ [ADMIN_NOTIFY] Не все уведомления отправлены! Успешно: ${successResults.length}, Неудачно: ${failedResults.length}, Всего: ${admins.length}`);
-      failedResults.forEach((result, index) => {
-        if (result.status === 'rejected') {
-          console.error(`❌ [ADMIN_NOTIFY] Отправка админу #${index} завершилась ошибкой:`, result.reason);
-        }
-      });
-    }
+    const successResults = results.filter((result): result is PromiseFulfilledResult<boolean> => result.status === 'fulfilled' && result.value === true);
     
     return successResults.length > 0;
 
@@ -370,10 +359,8 @@ export async function notifyAdminAboutNewAppointment(context: NotificationContex
  * Уведомление админу об отмене записи
  */
 export async function notifyAdminAboutCancelledAppointment(context: NotificationContext): Promise<boolean> {
-  console.log(`🔔 [ADMIN_CANCEL] Начало отправки уведомления админам об отмене записи #${context.appointmentId}`);
-  
   try {
-    const admins = await prisma.users.findMany({
+    const admins: AdminUser[] = await prisma.users.findMany({
       where: {
         role: 'admin',
         telegram_id: { not: null }
@@ -381,17 +368,12 @@ export async function notifyAdminAboutCancelledAppointment(context: Notification
       select: { telegram_id: true, username: true }
     });
 
-    console.log(`👥 [ADMIN_CANCEL] Найдено админов: ${admins.length}`);
-
     if (admins.length === 0) {
-      console.log('⚠️ [ADMIN_CANCEL] Нет админов с telegram_id для отправки уведомлений об отмене');
       return false;
     }
 
-    console.log(`📤 [ADMIN_CANCEL] Начинаем отправку уведомлений об отмене ${admins.length} админам`);
     const results = await Promise.allSettled(
-      admins.map(admin => {
-        console.log(`👤 [ADMIN_CANCEL] Отправка админу ${admin.username} (${admin.telegram_id})`);
+      admins.map((admin) => {
         return sendAppointmentNotification(
           'appointment_cancelled',
           'admin',
@@ -401,14 +383,7 @@ export async function notifyAdminAboutCancelledAppointment(context: Notification
       })
     );
 
-    const successResults = results.filter(result => result.status === 'fulfilled' && result.value === true);
-    const failedResults = results.filter(result => result.status === 'rejected' || (result.status === 'fulfilled' && result.value === false));
-    
-    console.log(`📊 [ADMIN_CANCEL] Результат: уведомления об отмене отправлены ${successResults.length}/${admins.length} админам`);
-    
-    if (failedResults.length > 0) {
-      console.warn(`⚠️ [ADMIN_CANCEL] Не все уведомления об отмене отправлены! Успешно: ${successResults.length}, Неудачно: ${failedResults.length}`);
-    }
+    const successResults = results.filter((result): result is PromiseFulfilledResult<boolean> => result.status === 'fulfilled' && result.value === true);
 
     return successResults.length > 0;
 

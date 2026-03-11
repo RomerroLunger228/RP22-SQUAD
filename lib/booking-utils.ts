@@ -226,7 +226,7 @@ function filterEmptyDaySlots(
     // 2. ИДЕАЛЬНЫЙ КОНЕЦ ДНЯ (услуга заканчивается точно в конце рабочего дня)
     const idealEndMinutes = workEndMinutes - serviceDuration;
     const endSlot = allSlots.find(slot => 
-        Math.abs(timeToMinutes(slot.time) - idealEndMinutes) <= 5
+        timeToMinutes(slot.time) === idealEndMinutes // точное совпадение, без буфера
     );
     if (endSlot && endSlot.time !== startSlot?.time) {
         filteredSlots.push(endSlot.time);
